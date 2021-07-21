@@ -26,7 +26,7 @@ def not_found(e):
 
 @app.route('/upload', methods=['POST'])
 def fileUpload():
-    target = os.path.join(app.config['UPLOAD_FOLDER'], 'test')
+    target = os.path.join(app.config['UPLOAD_FOLDER'], 'input')
     if not os.path.isdir(target):
         os.mkdir(target)
     logger.info("welcome to upload`")
