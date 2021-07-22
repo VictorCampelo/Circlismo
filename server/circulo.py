@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
+from server.ciclism.number.run import number
 from server.ciclism.circlism import circlism
 from server.ciclism.backgroud import Backgroud
 from server.ciclism.segmentation import Segmentation
 from server.ciclism.resize import Resize
 import cv2
-
-filename = 'pp'
 
 
 class Circle():
@@ -29,12 +28,4 @@ class Circle():
                  pathToOpen='/uploads/intermediate',
                  pathToOpenBack='/uploads/intermediate/backgroud',
                  pathToSave='/uploads/output').run_circlism()
-
-
-# result = cv2.imread(f'/uploads/output/{filename}.png')
-# result = cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
-"""# Number"""
-
-# cd /content/drive/MyDrive/Colab/ciclism/number
-
-# !python run.py /content/drive/MyDrive/Colab/ciclism/images/output/pp.png 40
+        number.run(self.filename, '/uploads/output', 40)

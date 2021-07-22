@@ -1,5 +1,6 @@
 import logging
 import os
+from server.circulo import Circle
 import time
 
 from flask import Flask, abort, request, send_from_directory, session, render_template, make_response, jsonify
@@ -40,6 +41,9 @@ def fileUpload():
     destination = "/".join([target, filename])
     file.save(destination)
     session['uploadFilePath'] = destination
+
+    Circle(filename)
+
     full_filename = "http://localhost:8000/uploads/test/" + filename
     print(full_filename)
     time.sleep(10)
