@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-from server.ciclism.number.run import number
-from server.ciclism.circlism import circlism
-from server.ciclism.backgroud import Backgroud
-from server.ciclism.segmentation import Segmentation
-from server.ciclism.resize import Resize
+from ciclism.meanshift import Meanshift
+from number.run import Number
+from ciclism.circlism import Circlism
+from ciclism.backgroud import Backgroud
 import cv2
 
 
@@ -12,20 +11,13 @@ class Circle():
         self.filename = filename
 
     def run(self):
-        Resize.operate(60,
-                       self.filename,
-                       pathToOpen='/uploads/input',
-                       pathToSave='/uploads/input')
-        Segmentation.operate(self.filename)
-        Resize.operate(500,
-                       self.filename,
-                       pathToOpen='/uploads/intermediate',
-                       pathToSave='/uploads/intermediate')
+        Meanshift(self.filename, pathToOpen='/uploads/input',
+                  pathToSave='/uploads/input').seg()
         Backgroud(self.filename,
                   pathToOpen='/uploads/intermediate',
                   pathToSave='/uploads/intermediate/backgroud')
-        circlism(self.filename,
+        Circlism(self.filename,
                  pathToOpen='/uploads/intermediate',
                  pathToOpenBack='/uploads/intermediate/backgroud',
                  pathToSave='/uploads/output').run_circlism()
-        number.run(self.filename, '/uploads/output', 40)
+        Number.run(self.filename, '/uploads/output', 40)

@@ -1,12 +1,11 @@
 import os
 import cv2
 import cairo
-import math
 import time
 import numpy as np
 
 
-class circlism():
+class Circlism():
     def __init__(self, filename, pathToOpen, pathToOpenBack, pathToSave):
         self.pathToSave = f'..{pathToSave}'
         self.image = self.load_image(f'..{pathToOpen}/{filename}')

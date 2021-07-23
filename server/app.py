@@ -1,6 +1,6 @@
 import logging
 import os
-from server.circulo import Circle
+from circulo import Circle
 import time
 
 from flask import Flask, abort, request, send_from_directory, session, render_template, make_response, jsonify
@@ -27,9 +27,10 @@ def not_found(e):
 
 @app.route('/upload', methods=['POST'])
 def fileUpload():
-    target = os.path.join(app.config['UPLOAD_FOLDER'], 'input')
-    if not os.path.isdir(target):
-        os.mkdir(target)
+    inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'input')
+    outputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'output')
+    if not os.path.isdir(inputFolder):
+        os.mkdir(inputFolder)
     logger.info("welcome to upload`")
     file = request.files['file']
     filename = secure_filename(file.filename)
@@ -38,13 +39,13 @@ def fileUpload():
         print(file_ext)
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             abort(400)
-    destination = "/".join([target, filename])
+    destination = "/".join([inputFolder, filename])
     file.save(destination)
     session['uploadFilePath'] = destination
 
     Circle(filename)
 
-    full_filename = "http://localhost:8000/uploads/test/" + filename
+    full_filename = "http://localhost:8000/uploads/output/" + filename
     print(full_filename)
     time.sleep(10)
     return jsonify({"image": full_filename})
@@ -52,8 +53,8 @@ def fileUpload():
 
 @app.route('/uploads/test/<filename>')
 def send_file(filename):
-    target = os.path.join(app.config['UPLOAD_FOLDER'], 'test')
-    return send_from_directory(target, filename)
+    inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'test')
+    return send_from_directory(inputFolder, filename)
 
 
 if __name__ == "__main__":
