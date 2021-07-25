@@ -7,20 +7,26 @@ import numpy as np
 
 class Circlism():
     def __init__(self, filename, pathToOpen, pathToOpenBack, pathToSave):
-        self.pathToSave = f'..{pathToSave}'
-        self.image = self.load_image(f'..{pathToOpen}/{filename}')
-        self.back = self.load_image(f'..{pathToOpenBack}/{filename}')
+        fileDir = os.path.dirname(os.path.realpath('file'))
+        fileIN = fileDir + f"{pathToOpen}/{filename}"
+        fileBACK = fileDir + f"{pathToOpenBack}/{filename}"
+        fileOUT = fileDir + f"{pathToSave}/{filename}"
+
+        self.pathToSave = fileOUT
+        self.image = self.load_image(fileIN)
+        self.back = self.load_image(fileBACK)
+        self.back1 = fileBACK
         self.SIZE_X = self.image.shape[1]
         self.SIZE_Y = self.image.shape[0]
         self.SIZE = min(self.SIZE_X, self.SIZE_Y)
         self.TWOPI = 2.0 * 3.14
 
-    def __load_image(path):
+    def load_image(self, path):
         Image1 = cv2.imread(path)
         Image1 = cv2.cvtColor(Image1, cv2.COLOR_BGR2RGB)
         return Image1
 
-    def __process_image(self):
+    def process_image(self):
         canny = cv2.Canny(self.image, 200, 300)
 
         edges_inv = (255 - canny)
@@ -29,7 +35,7 @@ class Circlism():
 
         return dist_transform
 
-    def __add_new_circles(self, is_fill, dist_map, circles, r, t, e):
+    def add_new_circles(self, is_fill, dist_map, circles, r, t, e):
         for x in range(2 * r, self.SIZE_X - r):
             for y in range(2 * r, self.SIZE_Y - r):
                 a = True
@@ -74,7 +80,7 @@ class Circlism():
 
                             y = y + p * 2 + r
 
-    def __show(self, img_clr, back, ctx, circles):
+    def show(self, img_clr, back, ctx, circles):
         for c in circles:
             if (not np.array_equal(back[int(c['y']), int(c['x'])],
                                    np.array([200, 200, 200]))):
@@ -95,10 +101,10 @@ class Circlism():
                 ctx.set_source_rgba(*[0, 0, 0, 1])
 
     def run_circlism(self):
-        processed_image = self.process_image(self.image)
-        back = cv2.imread(self.back)
+        processed_image = self.process_image()
+        back = cv2.imread(self.back1)
         s = time.time()
-        self.image = cairo.ImageSurface.create_from_png(self.back)
+        image2 = cairo.ImageSurface.create_from_png(self.back1)
         buffer_surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.SIZE_X,
                                          self.SIZE_Y)
         buffer = cairo.Context(buffer_surf)
@@ -112,7 +118,9 @@ class Circlism():
         buffer.fill()
         circles = []
         is_fill = np.zeros([self.SIZE_X + 1, self.SIZE_Y + 1])
-        D = [300, 200, 100, 50, 40, 30, 20, 15, 10, 5]
+        # D = [300, 200]
+        D = [300, 200, 100]
+        # D = [300, 200, 100, 50, 40, 30, 20, 15, 10, 5]
         # D = [ 40,30 ]
         # add_new_circles(is_fill, processed_image, circles,40,40,100)
         print(time.time() - s)

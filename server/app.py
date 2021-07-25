@@ -42,21 +42,20 @@ def fileUpload():
     destination = "/".join([inputFolder, filename])
     file.save(destination)
     session['uploadFilePath'] = destination
+    Circle(filename).run()
 
-    Circle(filename)
-
-    full_filename = "http://localhost:8000/uploads/output/" + filename
+    full_filename = "http://localhost:5000/uploads/output/result-canvas-notnumber.png"
     print(full_filename)
     time.sleep(10)
     return jsonify({"image": full_filename})
 
 
-@app.route('/uploads/test/<filename>')
+@app.route('/uploads/output/<filename>')
 def send_file(filename):
-    inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'test')
+    inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'output')
     return send_from_directory(inputFolder, filename)
 
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)

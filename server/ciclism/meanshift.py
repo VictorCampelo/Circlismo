@@ -6,24 +6,24 @@ import os
 
 
 class Meanshift():
-    def __init__(self, filename, pathToOpen, pathToSave) -> None:
-        self.filename = filename
-        self.input = pathToOpen
-        self.output = pathToSave
+    def __init__(self, filename, pathToOpen, pathToSave):
+        fileDir = os.path.dirname(os.path.realpath('__file__'))
+        self.fileIN = fileDir + f"{pathToOpen}/{filename}"
+        self.fileOUT = fileDir + f"{pathToSave}/result.png"
 
     def seg(self):
-        path = self.resize(60, f'..{self.input}/{self.filename}')
+        print(self.fileIN)
+        print(self.fileOUT)
+        path = self.resize(60, self.fileIN)
         img = cv2.imread(path)
         img = cv2.medianBlur(img, 3)
 
         img_seg5 = self.shift_seg(img)
-        cv2.imwrite(f'..{self.output}/{self.filename}', img_seg5)
-        self.resize(400, f'..{self.output}/{self.filename}')
+        cv2.imwrite(self.fileOUT, img_seg5)
+        self.resize(400, self.fileOUT)
 
-    def resize(value, pathToOpen):
-        fileDir = os.path.dirname(os.path.realpath('__file__'))
-        file = os.path.join(fileDir, f'{pathToOpen}')
-        img = cv2.imread(file, cv2.IMREAD_UNCHANGED)
+    def resize(self, value, path):
+        img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
 
         scale_percent = value  # percent of original size
         width = int(img.shape[1] * scale_percent / 100)
@@ -33,11 +33,10 @@ class Meanshift():
         # resize image
         resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
 
-        file = os.path.join(fileDir, 'image.png')
-        cv2.imwrite(file, resized)
-        return file
+        cv2.imwrite(path, resized)
+        return path
 
-    def shift_seg(img):
+    def shift_seg(self, img):
         size = img.shape
         height = size[0]
         width = size[1]
@@ -47,8 +46,9 @@ class Meanshift():
         flat_image = np.float32(flat_image)
 
         # bandwidth = 15
-        bandwidth = estimate_bandwidth(
-            flat_image, quantile=.04, n_samples=1000)
+        bandwidth = estimate_bandwidth(flat_image,
+                                       quantile=.04,
+                                       n_samples=1000)
         print("Size of bandwidth: " + str(bandwidth))
         ms = MeanShift(bandwidth, max_iter=800, bin_seeding=True)
         ms.fit(flat_image)

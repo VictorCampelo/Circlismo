@@ -2,3 +2,7 @@ env
 __pycache__
 
 utils
+*.png
+*.jpg
+*.jpeg
+*.pyc

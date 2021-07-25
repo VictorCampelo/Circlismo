@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 
 
 class Backgroud():
@@ -9,7 +10,11 @@ class Backgroud():
         pathToOpen,
         pathToSave,
     ):
-        img = cv2.imread(f'..{pathToOpen}/{filename}.png')
+        fileDir = os.path.dirname(os.path.realpath('__file__'))
+        fileIN = fileDir + f"{pathToOpen}/{filename}"
+        fileOUT = fileDir + f"{pathToSave}/{filename}"
+
+        img = cv2.imread(fileIN)
 
         blurred = cv2.GaussianBlur(img, (5, 5), 0)  # Remove noise
 
@@ -24,9 +29,9 @@ class Backgroud():
         # Zero any value that is less than mean. This reduces a lot of noise.
         edgeImg[edgeImg <= mean] = 0
         # '/content/drive/MyDrive/Colab/ciclism/images/intermediate/background/'
-        cv2.imwrite(f'..{pathToSave}/{filename}.png', img)
+        cv2.imwrite(fileOUT, img)
 
-    def __edgedetect(channel):
+    def edgedetect(self, channel):
         sobelX = cv2.Sobel(channel, cv2.CV_16S, 1, 0)
         sobelY = cv2.Sobel(channel, cv2.CV_16S, 0, 1)
         sobel = np.hypot(sobelX, sobelY)
@@ -34,7 +39,7 @@ class Backgroud():
         sobel[sobel > 255] = 255
         return sobel
 
-    def __findSignificantContours(img, edgeImg):
+    def findSignificantContours(img, edgeImg):
         contours, heirarchy = cv2.findContours(edgeImg, cv2.RETR_TREE,
                                                cv2.CHAIN_APPROX_SIMPLE)
 

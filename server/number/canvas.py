@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 """Script to generate a canvas out of a picture"""
 
+import ntpath
+
+import cv2
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
-import cv2
-import ntpath
 
 
 class Canvas():
@@ -64,10 +65,10 @@ class Canvas():
                         contour, True) < -5:
                     cv2.drawContours(canvas, [contour], -1, 0, 1)
                     #Add label
-                    # txt_x, txt_y = contour[0][0]
-                    # cv2.putText(canvas2, '{:d}'.format(ind + 1),
-                    #             (txt_x+5, txt_y + 15),
-                    #             cv2.FONT_HERSHEY_SIMPLEX, 0.35, 0.35, 1)
+                    txt_x, txt_y = contour[0][0]
+                    cv2.putText(canvas, '{:d}'.format(ind + 1),
+                                (txt_x + 5, txt_y + 15),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.35, 0.35, 1)
 
         # if self.plot:
         #     self.plot_figure(quantified_image, "Expected Result")
@@ -75,12 +76,11 @@ class Canvas():
 
         if self.save:
             cv2.imwrite(
-                f"./outputs/{self.namefile}-result.png",
+                f"{self.namefile}-result.png",
                 cv2.cvtColor(
                     quantified_image.astype('float32') * 255,
                     cv2.COLOR_BGR2RGB))
-            cv2.imwrite(f"./outputs/{self.namefile}-canvas-notnumber.png",
-                        canvas)
+            cv2.imwrite(f"{self.namefile}-canvas-notnumber.png", canvas)
         return canvas
 
     def resize(self):
@@ -133,18 +133,6 @@ class Canvas():
             cv2.putText(picture, str(col), (100, 30 * ind + 23),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.6, 0, 2)
 
-        if self.plot:
-            self.plot_figure(picture, 'Colormap')
-
         if self.save:
-            cv2.imwrite(f"./outputs/{self.namefile}-colormap.png",
+            cv2.imwrite(f"{self.namefile}-colormap.png",
                         cv2.cvtColor(picture, cv2.COLOR_BGR2RGB))
-
-    def plot_figure(self, image, title):
-        """Function that display an image with a title and hides some stuff"""
-        plt.figure()
-        plt.clf()
-        plt.axis('off')
-        plt.title(title)
-        plt.imshow(image)
-        plt.show()

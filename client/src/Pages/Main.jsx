@@ -6,19 +6,19 @@ class Main extends React.Component {
     this.state = { file: "", imagePreviewUrl: "", response: "" };
   }
 
-  _handleSubmit(e) {
+  async _handleSubmit(e) {
     e.preventDefault();
     // TODO: do something with -> this.state.file
     const data = new FormData();
     data.append("file", this.state.file);
 
-    fetch("http://127.0.0.1:8000/upload", { method: "POST", body: data })
+    const result = await fetch("http://127.0.0.1:5000/upload", {
+      method: "POST",
+      body: data,
+    })
       .then((response) => response.json())
-      .then((data) => {
-        console.log(data.image);
-        this.setState({ response: data.image });
-      })
       .catch(console.log);
+    this.setState({ response: result.image });
     console.log("handle uploading-", this.state.file);
   }
 

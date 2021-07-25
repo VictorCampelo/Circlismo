@@ -11,13 +11,17 @@ class Circle():
         self.filename = filename
 
     def run(self):
-        Meanshift(self.filename, pathToOpen='/uploads/input',
-                  pathToSave='/uploads/input').seg()
-        Backgroud(self.filename,
+        print("meanshift")
+        Meanshift(self.filename,
+                  pathToOpen='/uploads/input',
+                  pathToSave='/uploads/intermediate').seg()
+        print("backgroud")
+        Backgroud("result.png",
                   pathToOpen='/uploads/intermediate',
                   pathToSave='/uploads/intermediate/backgroud')
-        Circlism(self.filename,
+        print("ciclism")
+        Circlism("result.png",
                  pathToOpen='/uploads/intermediate',
                  pathToOpenBack='/uploads/intermediate/backgroud',
                  pathToSave='/uploads/output').run_circlism()
-        Number.run(self.filename, '/uploads/output', 40)
+        Number.run("result.png", '/uploads/output', 40)
