@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
+import os
 
 
 class Canvas():
@@ -34,7 +35,8 @@ class Canvas():
                  save=True,
                  pixel_size=2048):
 
-        self.namefile = ntpath.basename(path_pic).split(".")[0]
+        self.namefile = os.path.splitext(path_pic)[0]
+        # self.namefile = ntpath.basename(path_pic).split(".")[0]
         self.src = cv2.cvtColor(cv2.imread(path_pic), cv2.COLOR_BGR2RGB)
         self.nb_color = nb_color
         self.plot = plot
@@ -76,7 +78,7 @@ class Canvas():
 
         if self.save:
             cv2.imwrite(
-                f"{self.namefile}-result.png",
+                f"{self.namefile}-final.png",
                 cv2.cvtColor(
                     quantified_image.astype('float32') * 255,
                     cv2.COLOR_BGR2RGB))

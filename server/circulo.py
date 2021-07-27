@@ -24,4 +24,4 @@ class Circle():
                  pathToOpen='/uploads/intermediate',
                  pathToOpenBack='/uploads/intermediate/backgroud',
                  pathToSave='/uploads/output').run_circlism()
-        Number.run("result.png", '/uploads/output', 40)
+        Number("result.png", pathToOpen='/uploads/output').run(40)
