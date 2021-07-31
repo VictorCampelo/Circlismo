@@ -1,12 +1,19 @@
-import React from "react";
 import Main from "./Pages/Main";
+import { UploadProvider } from "./hooks/useUploaded";
+import { DownloadProvider } from "./hooks/useDownloaded";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 const App = () => {
   return (
-    <div>
-      <h1>File Upload</h1>
-      <Main />
-    </div>
+    <BrowserRouter>
+      <UploadProvider>
+        <DownloadProvider>
+          <Switch>
+            <Route path="/" exact component={Main} />
+          </Switch>
+        </DownloadProvider>
+      </UploadProvider>
+    </BrowserRouter>
   );
 };
 
