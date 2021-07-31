@@ -1,4 +1,4 @@
-import Main from "./Pages/Main";
+import Main from "./Pages/Main/index";
 import { UploadProvider } from "./hooks/useUploaded";
 import { DownloadProvider } from "./hooks/useDownloaded";
 import { BrowserRouter, Route, Switch } from "react-router-dom";

@@ -1,5 +1,5 @@
-import React from "react";
 import { useUploaded } from "../../../hooks/useUploaded";
+import "./style.scss";
 
 export function ImageUploaded() {
   const { upload } = useUploaded();

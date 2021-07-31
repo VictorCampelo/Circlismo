@@ -1,10 +1,11 @@
-import Preview from "../components/Organisms/Preview";
+import Preview from "../../components/Organisms/Preview";
 import { Component } from "react";
+import "./index.scss";
 
 class Main extends Component {
   render() {
     return (
-      <div>
+      <div className="main">
         <h1>File Upload</h1>
         <Preview />
       </div>
