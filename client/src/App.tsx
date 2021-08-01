@@ -1,4 +1,4 @@
-import Main from "./Pages/Main/index";
+import ProcessImage from "./Pages/ProcessImage/index";
 import { UploadProvider } from "./hooks/useUploaded";
 import { DownloadProvider } from "./hooks/useDownloaded";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
@@ -9,7 +9,7 @@ const App = () => {
       <UploadProvider>
         <DownloadProvider>
           <Switch>
-            <Route path="/" exact component={Main} />
+            <Route path="/" exact component={ProcessImage} />
           </Switch>
         </DownloadProvider>
       </UploadProvider>

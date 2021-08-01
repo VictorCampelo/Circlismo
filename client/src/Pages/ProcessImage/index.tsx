@@ -1,8 +1,8 @@
-import Preview from "../../components/Organisms/Preview";
+import { Preview } from "../../components/Organisms/Preview";
 import { Component } from "react";
 import "./index.scss";
 
-class Main extends Component {
+class ProcessImage extends Component {
   render() {
     return (
       <div className="main">
@@ -13,4 +13,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default ProcessImage;
