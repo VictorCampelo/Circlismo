@@ -1,4 +1,5 @@
 import { useDownloaded } from "../../../hooks/useDownloaded";
+import "./style.scss";
 
 export function ImageDownloaded() {
   const { download } = useDownloaded();
