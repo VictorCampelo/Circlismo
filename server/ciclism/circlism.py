@@ -119,8 +119,8 @@ class Circlism():
         circles = []
         is_fill = np.zeros([self.SIZE_X + 1, self.SIZE_Y + 1])
         # D = [300, 200]
-        D = [300, 200, 100]
-        # D = [300, 200, 100, 50, 40, 30, 20, 15, 10, 5]
+        # D = [300, 200, 100]
+        D = [200, 90, 60, 30, 20, 15]
         # D = [ 40,30 ]
         # add_new_circles(is_fill, processed_image, circles,40,40,100)
         print(time.time() - s)

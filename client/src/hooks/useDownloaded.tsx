@@ -37,7 +37,7 @@ export function DownloadProvider({ children }: DownloadedProviderProps) {
     })
       .then((response) => response.json())
       .catch(console.log);
-    setDownload(result.image);
+    setDownload({processedImageUrl: result.image});
   }
 
   return (

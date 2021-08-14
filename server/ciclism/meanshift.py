@@ -14,21 +14,37 @@ class Meanshift():
     def seg(self):
         print(self.fileIN)
         print(self.fileOUT)
-        path = self.resize(60, self.fileIN)
+        path = self.resize(30, self.fileIN)
         img = cv2.imread(path)
         img = cv2.medianBlur(img, 3)
 
         img_seg5 = self.shift_seg(img)
         cv2.imwrite(self.fileOUT, img_seg5)
-        self.resize(400, self.fileOUT)
+        self.resizeTo1024(2048, self.fileOUT)
 
     def resize(self, value, path):
         img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+
+        if(img.shape[0] <= 1024 and img.shape[1] <= 1024):
+            return path
 
         scale_percent = value  # percent of original size
         width = int(img.shape[1] * scale_percent / 100)
         height = int(img.shape[0] * scale_percent / 100)
         dim = (width, height)
+
+        # resize image
+        resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)
+
+        cv2.imwrite(path, resized)
+        return path
+    
+    def resizeTo1024(self, value, path):
+        img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+
+        (h, w) = img.shape[:2]
+        r = value / float(w)
+        dim = (value, int(h * r))
 
         # resize image
         resized = cv2.resize(img, dim, interpolation=cv2.INTER_AREA)

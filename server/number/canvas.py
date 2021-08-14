@@ -69,8 +69,8 @@ class Canvas():
                     #Add label
                     txt_x, txt_y = contour[0][0]
                     cv2.putText(canvas, '{:d}'.format(ind + 1),
-                                (txt_x + 5, txt_y + 15),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.35, 0.35, 1)
+                                (txt_x, txt_y),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.25, 0.25, 1)
 
         # if self.plot:
         #     self.plot_figure(quantified_image, "Expected Result")
