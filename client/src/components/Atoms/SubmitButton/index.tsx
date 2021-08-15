@@ -5,7 +5,7 @@ interface AppState {
 }
 export function SubmitButton({ text }: AppState) {
   return (
-    <button className="submitButton" type="submit">
+    <button className="learn-more" type="submit">
       {text}
     </button>
   );

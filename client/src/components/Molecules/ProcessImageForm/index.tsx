@@ -9,7 +9,7 @@ export function ProcessImageForm() {
   return (
     <form className="processImageForm" onSubmit={(e) => processImage(e)}>
       <FileInput />
-      <SubmitButton text="Upload Image" />
+      <SubmitButton text="Processar imagem" />
     </form>
   );
 }
