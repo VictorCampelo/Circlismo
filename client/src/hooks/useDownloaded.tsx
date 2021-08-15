@@ -28,6 +28,7 @@ export function DownloadProvider({ children }: DownloadedProviderProps) {
   async function processImage(e: any) {
     e.preventDefault();
     // TODO: do something with -> this.state.file
+    setDownload({processedImageUrl: ""});
     const data = new FormData();
     data.append("file", upload.file);
 

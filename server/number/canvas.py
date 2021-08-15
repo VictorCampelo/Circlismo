@@ -88,6 +88,12 @@ class Canvas():
     def resize(self):
         """Resize the image to match the target width and respect the picture ratio"""
         (height, width) = self.src.shape[:2]
+        # value = 2048
+
+        # (h, w) = self.src.shape[:2]
+        # r = value / float(w)
+        # dim = (value, int(h * r))
+
         if height > width:  #portrait mode
             dim = (int(width * self.tar_width / float(height)), self.tar_width)
         else:
@@ -96,11 +102,11 @@ class Canvas():
 
     def cleaning(self, picture):
         """Reduction of noize, Morphomat operations, opening then closing """
-        clean_pic = cv2.fastNlMeansDenoisingColored(picture, None, 0, 0, 15,
+        clean_pic = cv2.fastNlMeansDenoisingColored(picture, None, 20, 0, 2,
                                                     10)
-        # kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (10, 10))
-        # clean_pic = cv2.morphologyEx(clean_pic, cv2.MORPH_OPEN, kernel, cv2.BORDER_REPLICATE)
-        # clean_pic = cv2.morphologyEx( clean_pic, cv2.MORPH_CLOSE, kernel, cv2.BORDER_REPLICATE)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (1, 1))
+        clean_pic = cv2.morphologyEx(clean_pic, cv2.MORPH_OPEN, kernel, cv2.BORDER_REPLICATE)
+        clean_pic = cv2.morphologyEx( clean_pic, cv2.MORPH_CLOSE, kernel, cv2.BORDER_REPLICATE)
         return clean_pic
 
     def quantification(self, picture):
