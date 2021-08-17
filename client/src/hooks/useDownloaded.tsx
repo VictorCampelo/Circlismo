@@ -28,17 +28,16 @@ export function DownloadProvider({ children }: DownloadedProviderProps) {
   async function processImage(e: any) {
     e.preventDefault();
     // TODO: do something with -> this.state.file
-    setDownload({processedImageUrl: ""});
+    setDownload({ processedImageUrl: "" });
     const data = new FormData();
     data.append("file", upload.file);
 
-    const result = await fetch("http://127.0.0.1:5000/upload", {
+    await fetch("http://127.0.0.1:5000/upload", {
       method: "POST",
       body: data,
     })
-      .then((response) => response.json())
+      .then(async (response: any) => setDownload({ processedImageUrl: response.json().image }))
       .catch(console.log);
-    setDownload({processedImageUrl: result.image});
   }
 
   return (
