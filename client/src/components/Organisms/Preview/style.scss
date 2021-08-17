@@ -6,3 +6,24 @@
   align-items: center;
   justify-content: center;
 }
+
+.previewImages {
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+}
+
+.previewText {
+  margin-top: 35px;
+  background-color: #9071f440;
+  width: 30%;
+  height: 500px;
+  box-shadow: 5px 5px 18px 1px #7355bed9;
+  img {
+    width: 50%;
+  }
+}

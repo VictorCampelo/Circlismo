@@ -16,7 +16,10 @@ export function Preview() {
         <ErrorBoundary>
           <div className="previewComponent">
             <ProcessImageForm />
+          </div>
+          <div className="previewImages">
             <ImageUploaded />
+            <ImageDownloaded />
             <ImageDownloaded />
           </div>
         </ErrorBoundary>
