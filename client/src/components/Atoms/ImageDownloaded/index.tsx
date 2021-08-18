@@ -1,14 +1,13 @@
-import { useDownloaded } from "../../../hooks/useDownloaded";
 import "./style.scss";
 
-export function ImageDownloaded() {
-  const { download } = useDownloaded();
+interface AppState {
+  imagePreviewUrl: string;
+}
 
-  return download.processedImageUrl ? (
+export function ImageDonwloaded({ imagePreviewUrl }: AppState) {
+  return (
     <div className="imgPreview">
-      <img src={download.processedImageUrl} alt="img" />
+      <img src={imagePreviewUrl} alt="img" />
     </div>
-  ) : (
-    <div className="previewText">Please select an Image for Preview</div>
   );
 }

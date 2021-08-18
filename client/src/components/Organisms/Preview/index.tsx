@@ -1,9 +1,9 @@
 import { ProcessImageForm } from "../../Molecules/ProcessImageForm";
-import { ImageUploaded } from "../../Atoms/ImageUploaded";
-import { ImageDownloaded } from "../../Atoms/ImageDownloaded";
 import useErrorBoundary from "use-error-boundary";
 
 import "./style.scss";
+import { CardUploadedImage } from "../../Molecules/CardUploadedImage";
+import { CardDonwloadedImage } from "../../Molecules/CardDownloadedImage";
 
 export function Preview() {
   const { ErrorBoundary, didCatch, error } = useErrorBoundary();
@@ -18,9 +18,9 @@ export function Preview() {
             <ProcessImageForm />
           </div>
           <div className="previewImages">
-            <ImageUploaded />
-            <ImageDownloaded />
-            <ImageDownloaded />
+            <CardUploadedImage text="Original Image"/>
+            <CardDonwloadedImage text="Ciclism Image"/>
+            <CardDonwloadedImage text="Numbered Ciclism Image"/>
           </div>
         </ErrorBoundary>
       )}

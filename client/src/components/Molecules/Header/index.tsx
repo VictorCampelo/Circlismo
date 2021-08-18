@@ -6,17 +6,17 @@ const Header: React.FC = () => {
     <div className="header">
       <div className="logo">Circlism</div>
       <nav>
-        <Link to="/Venda">Venda</Link>
+        <Link to="/Venda">Soluctions</Link>
 
-        <Link to="/Fidelize">Fidelize</Link>
+        <Link to="/Fidelize">Loyalize</Link>
 
-        <Link to="/Planos">Planos</Link>
+        <Link to="/Planos">Plans</Link>
 
-        <Link to="/Gerencie">Gerencie</Link>
+        <Link to="/Gerencie">manage</Link>
 
-        <Link to="/Ajuda">Ajuda</Link>
+        <Link to="/Ajuda">Help</Link>
 
-        <button>Começar</button>
+        <button>Login</button>
       </nav>
     </div>
   );

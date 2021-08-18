@@ -9,7 +9,7 @@ export function FileInput() {
     <label className="file-input__label">
       <input
         type="file"
-        className="file-input__input"
+        className="file-input__input col-1"
         onChange={(e) => handleImageChange(e)}
       />
         <svg

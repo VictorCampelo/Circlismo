@@ -27,7 +27,7 @@
     list-style-type: none;
 
     a {
-      padding: 2px 20px;
+      padding: 10px 20px;
 
       border-radius: 5px;
       text-decoration: none;
@@ -44,11 +44,12 @@
     }
 
     button {
-      padding: 5px 20px;
+      padding: 10px 20px;
+      white-space: nowrap;
 
       border-radius: 8px;
       border: none;
-      background: #5ed210;
+      background: #00C2A3;
       margin-right: 1.5rem;
       margin-left: 2rem;
       cursor: pointer;
@@ -56,13 +57,14 @@
       //   font-family: Poppins;
       font-style: normal;
       font-weight: normal;
+      font-weight: 600;
       font-size: 1.2rem;
       transition: 0.4s background;
 
-      color: #31352f;
+      color: #ffffff;
 
       &:hover {
-        color: #3a3f38;
+        color: #ffffff;
 
         background: #6ff92c;
       }

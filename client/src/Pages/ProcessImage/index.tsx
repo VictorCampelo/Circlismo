@@ -7,10 +7,14 @@ class ProcessImage extends Component {
   render() {
     return (
       <>
-        <Header/>
+        <Header />
         <div className="main">
-          <h1>File Upload</h1>
-          <h2>Transform your photo to circlism mode and getting point to draw</h2>
+          <div className="title">
+            <h1>File Upload</h1>
+            <h2>
+              Transform your photo to circlism mode and getting point to draw
+            </h2>
+          </div>
           <Preview />
         </div>
       </>
