@@ -1,29 +1,33 @@
+import { useState } from "react";
+import { useDownloaded } from "../../../hooks/useDownloaded";
 import "./style.scss";
 interface AppState {
   text: string;
 }
 
 export function SubmitButton({ text }: AppState) {
-  var animateButton = function (e: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    e.preventDefault;
-    //reset animation
-    e.target.classList.remove("animate");
+  const { Process } = useDownloaded();
 
-    e.target.classList.add("animate");
+  const [animation, setAnimation] = useState(false)
 
-    e.target.classList.add("animate");
-
-    setTimeout(function () {
-      e.target.classList.remove("animate");
-    }, 6000);
-  };
-
-  var classname = document.getElementsByClassName("button");
-
-  for (var i = 0; i < classname.length; i++) {
-    classname[i].addEventListener("click", animateButton, false);
+  async function handleAnimation() {
+    setAnimation(true);
+    await Process();
+    setAnimation(false);
   }
 
-  return <button className="button success col-1">Submit</button>;
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        Process();
+        handleAnimation();
+      }}
+      className={
+        animation ? "button col-1 animate" : "button col-1"
+      }
+    >
+      {text}
+    </button>
+  );
 }

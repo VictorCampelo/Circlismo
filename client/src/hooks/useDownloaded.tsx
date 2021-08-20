@@ -1,17 +1,18 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+} from "react";
 import { useUploaded } from "./useUploaded";
-
-interface Downloaded {
-  processedImageUrl: string;
-}
 
 interface DownloadedProviderProps {
   children: ReactNode;
 }
 
 interface DownloadedContextData {
-  download: Downloaded;
-  processImage: (e: any) => void;
+  download: string;
+  Process: () => Promise<void>;
 }
 
 export const downloadContext = createContext<DownloadedContextData>(
@@ -21,27 +22,24 @@ export const downloadContext = createContext<DownloadedContextData>(
 export function DownloadProvider({ children }: DownloadedProviderProps) {
   const { upload } = useUploaded();
 
-  const [download, setDownload] = useState<Downloaded>({
-    processedImageUrl: "",
-  });
+  const [download, setDownload] = useState("");
 
-  async function processImage(e: any) {
-    e.preventDefault();
-    // TODO: do something with -> this.state.file
-    setDownload({ processedImageUrl: "" });
+  async function Process() {
     const data = new FormData();
     data.append("file", upload.file);
 
-    await fetch("http://127.0.0.1:5000/upload", {
+    const res = await fetch("http://127.0.0.1:5000/upload", {
       method: "POST",
       body: data,
     })
-      .then(async (response: any) => setDownload({ processedImageUrl: response.json().image }))
+      .then((response) => response.json())
       .catch(console.log);
+      console.log(res.image)
+    setDownload(res.image);
   }
 
   return (
-    <downloadContext.Provider value={{ download, processImage }}>
+    <downloadContext.Provider value={{ download, Process }}>
       {children}
     </downloadContext.Provider>
   );

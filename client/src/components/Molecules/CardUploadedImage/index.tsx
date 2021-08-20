@@ -1,5 +1,4 @@
 import { ImageUploaded } from "../../Atoms/ImageUploaded";
-import { SubmitButton } from "../../Atoms/SubmitButton";
 import { useUploaded } from "../../../hooks/useUploaded";
 
 import "./style.scss";

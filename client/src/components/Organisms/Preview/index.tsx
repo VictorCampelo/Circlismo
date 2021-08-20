@@ -20,7 +20,7 @@ export function Preview() {
           <div className="previewImages">
             <CardUploadedImage text="Original Image"/>
             <CardDonwloadedImage text="Ciclism Image"/>
-            <CardDonwloadedImage text="Numbered Ciclism Image"/>
+            {/* <CardDonwloadedImage text="Numbered Ciclism Image"/> */}
           </div>
         </ErrorBoundary>
       )}

@@ -4,12 +4,13 @@ import { FileInput } from "../../Atoms/FileInput";
 import "./style.scss";
 
 export function ProcessImageForm() {
-  const { processImage } = useDownloaded();
+  const { Process } = useDownloaded();
 
   return (
-    <form className="processImageForm" onSubmit={(e) => processImage(e)}>
+    <form className="processImageForm">
       <FileInput />
       <SubmitButton text="Processar imagem" />
+      {/* <button type="button" onClick={(e) => Process()}>test</button> */}
     </form>
   );
 }
