@@ -1,9 +1,7 @@
 import cv2
 import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
-import matplotlib.pyplot as plt
 import os
-
 
 class Meanshift():
     def __init__(self, filename, pathToOpen, pathToSave):
