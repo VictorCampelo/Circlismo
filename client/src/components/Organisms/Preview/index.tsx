@@ -4,6 +4,7 @@ import useErrorBoundary from "use-error-boundary";
 import "./style.scss";
 import { CardUploadedImage } from "../../Molecules/CardUploadedImage";
 import { CardDonwloadedImage } from "../../Molecules/CardDownloadedImage";
+import { CardNumberatedImage } from "../../Molecules/CardNumberatedImage";
 
 export function Preview() {
   const { ErrorBoundary, didCatch, error } = useErrorBoundary();
@@ -18,9 +19,9 @@ export function Preview() {
             <ProcessImageForm />
           </div>
           <div className="previewImages">
-            <CardUploadedImage text="Original Image"/>
-            <CardDonwloadedImage text="Ciclism Image"/>
-            {/* <CardDonwloadedImage text="Numbered Ciclism Image"/> */}
+            <CardUploadedImage text="Original Image" />
+            <CardDonwloadedImage text="Circlism Image" />
+            <CardNumberatedImage text="Numbered Circlism Image" />
           </div>
         </ErrorBoundary>
       )}

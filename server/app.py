@@ -1,6 +1,7 @@
 import logging
 import os
 from circulo import Circle
+from numerator import Numerator
 import time
 
 from flask import Flask, abort, request, send_from_directory, session, render_template, make_response, jsonify
@@ -25,29 +26,35 @@ def not_found(e):
     return render_template("index.html")
 
 
-@app.route('/upload', methods=['POST'])
-def fileUpload():
+@app.route('/upload/ciclism', methods=['POST'])
+def ciclism():
     inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'input')
     outputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'output')
     if not os.path.isdir(inputFolder):
         os.mkdir(inputFolder)
     logger.info("welcome to upload`")
     file = request.files['file']
+    id = request.form['id']
+    print(id)
     filename = secure_filename(file.filename)
     if filename != '':
         file_ext = os.path.splitext(filename)[1]
-        print(file_ext)
         if file_ext not in app.config['UPLOAD_EXTENSIONS']:
             abort(400)
-    destination = "/".join([inputFolder, filename])
+    destination = "/".join([inputFolder, id+'.png'])
     file.save(destination)
     session['uploadFilePath'] = destination
-    Circle(filename).run()
+    Circle(id+'.png').run()
 
-    full_filename = "http://localhost:5000/uploads/output/result-canvas-notnumber.png"
-    print(full_filename)
+    full_filename = "http://localhost:5000/uploads/output/result.png"
     time.sleep(10)
     return jsonify({"image": full_filename})
+
+@app.route('/upload/number', methods=['POST'])
+def number():
+    Numerator()
+    pathFile = "http://localhost:5000/uploads/output/result-canvas-notnumber.png"
+    return jsonify({"image": pathFile})
 
 
 @app.route('/uploads/output/<filename>')

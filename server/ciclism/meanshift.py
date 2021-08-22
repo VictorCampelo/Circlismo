@@ -10,8 +10,6 @@ class Meanshift():
         self.fileOUT = fileDir + f"{pathToSave}/result.png"
 
     def seg(self):
-        print(self.fileIN)
-        print(self.fileOUT)
         path = self.resize(self.fileIN)
         img = cv2.imread(path)
         img = cv2.medianBlur(img, 3)
@@ -62,13 +60,11 @@ class Meanshift():
         bandwidth = estimate_bandwidth(flat_image,
                                        quantile=.04,
                                        n_samples=1000)
-        print("Size of bandwidth: " + str(bandwidth))
         ms = MeanShift(bandwidth, max_iter=800, bin_seeding=True)
         ms.fit(flat_image)
         labeled = ms.labels_
 
         segments = np.unique(labeled)
-        print('Number of segments: ', segments.shape[0])
 
         center_feature = np.uint8(ms.cluster_centers_)
         res_feature = center_feature[labeled.flatten(), 0:3]

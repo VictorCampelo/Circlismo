@@ -1,9 +1,5 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
+import * as uuid from "uuid";
 import { useUploaded } from "./useUploaded";
 
 interface DownloadedProviderProps {
@@ -12,7 +8,9 @@ interface DownloadedProviderProps {
 
 interface DownloadedContextData {
   download: string;
-  Process: () => Promise<void>;
+  numberator: string;
+  Circlism: () => Promise<void>;
+  Numberator: () => Promise<void>;
 }
 
 export const downloadContext = createContext<DownloadedContextData>(
@@ -23,23 +21,42 @@ export function DownloadProvider({ children }: DownloadedProviderProps) {
   const { upload } = useUploaded();
 
   const [download, setDownload] = useState("");
+  const [numberator, setNumberator] = useState("");
+  const [filename, setFilename] = useState(uuid.v4());
 
-  async function Process() {
+  async function Circlism() {
     const data = new FormData();
     data.append("file", upload.file);
+    data.append("id", filename);
+    
+    const res = await fetch("http://127.0.0.1:5000/upload/ciclism", {
+      method: "POST",
+      body: data,
+    })
+    .then((response) => response.json())
+    .catch(console.log);
+    setDownload(res.image);
+  }
 
-    const res = await fetch("http://127.0.0.1:5000/upload", {
+  async function Numberator() {
+    const data = new FormData();
+    data.append("file", upload.file);
+    data.append("id", filename);
+
+    const res = await fetch("http://127.0.0.1:5000/upload/number", {
       method: "POST",
       body: data,
     })
       .then((response) => response.json())
       .catch(console.log);
-      console.log(res.image)
-    setDownload(res.image);
+    setNumberator(res.image);
+    setFilename(uuid.v4())
   }
 
   return (
-    <downloadContext.Provider value={{ download, Process }}>
+    <downloadContext.Provider
+      value={{ download, numberator, Circlism, Numberator }}
+    >
       {children}
     </downloadContext.Provider>
   );

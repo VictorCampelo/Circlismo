@@ -4,7 +4,7 @@ import "./index.scss";
 const Header: React.FC = () => {
   return (
     <div className="header">
-      <div className="logo">Circlism</div>
+      <div className="logo">Circlism()</div>
       <nav>
         <Link to="/Venda">Soluctions</Link>
 

@@ -118,21 +118,17 @@ class Circlism():
         buffer.fill()
         circles = []
         is_fill = np.zeros([self.SIZE_X + 1, self.SIZE_Y + 1])
-        D = [300, 200]
+        # D = [300, 200]
         # D = [300, 200, 100]
-        # D = [150, 120, 90, 60, 30, 20, 10]
+        D = [150, 120, 90, 60, 30, 20, 10]
         # D = [ 40,30 ]
         # add_new_circles(is_fill, processed_image, circles,40,40,100)
-        print(time.time() - s)
         for i in range(len(D)):
             if i == 0:
                 continue
             self.add_new_circles(is_fill, processed_image, circles, D[i], D[i],
                                  D[i - 1])
-            print(time.time() - s)
 
         buffer.set_line_width(1)
         self.show(self.image, back, buffer, circles)
-        print(len(circles))
         buffer_surf.write_to_png(self.pathToSave)
-        print(time.time() - s)

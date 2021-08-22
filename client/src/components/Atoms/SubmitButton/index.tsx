@@ -6,13 +6,14 @@ interface AppState {
 }
 
 export function SubmitButton({ text }: AppState) {
-  const { Process } = useDownloaded();
+  const { Circlism, Numberator } = useDownloaded();
 
   const [animation, setAnimation] = useState(false)
 
   async function handleAnimation() {
     setAnimation(true);
-    await Process();
+    await Circlism();
+    await Numberator();
     setAnimation(false);
   }
 
@@ -20,7 +21,6 @@ export function SubmitButton({ text }: AppState) {
     <button
       type="button"
       onClick={() => {
-        Process();
         handleAnimation();
       }}
       className={
