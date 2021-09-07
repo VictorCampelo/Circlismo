@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "./index.scss";
 
 const Header: React.FC = () => {
+  const history = useHistory();
+
+  const routeChange = () =>{
+    history.push("/login");
+  }
+
   return (
     <div className="header">
       <div className="logo">Circlism()</div>
@@ -16,7 +22,7 @@ const Header: React.FC = () => {
 
         <Link to="/Ajuda">Help</Link>
 
-        <button>Login</button>
+        <button onClick={routeChange}>Login</button>
       </nav>
     </div>
   );

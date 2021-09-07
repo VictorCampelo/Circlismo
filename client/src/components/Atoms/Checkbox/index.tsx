@@ -1,6 +1,6 @@
 import { Container } from "./styles";
 import { FaCheck } from 'react-icons/fa';
-import Link from 'next/link'
+import { Link } from "react-router-dom";
 
 interface CheckboxProps {
   confirm: boolean;
@@ -25,8 +25,8 @@ export const Checkbox = ({ confirm, toggleConfirm, label }: CheckboxProps) => {
         <label htmlFor="btn">{label}</label>
       </div>
 
-      <Link href="/recover">
-        <a>Esqueceu sua senha</a>
+      <Link to="/recover">
+        Esqueceu sua senha
       </Link>
     </Container>
   )

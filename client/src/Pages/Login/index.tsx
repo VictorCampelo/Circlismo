@@ -3,8 +3,13 @@ import "./index.scss";
 import Header from "../../components/Molecules/Header";
 import { Link, useHistory } from "react-router-dom";
 import { AiFillGoogleCircle } from "react-icons/ai";
-import { FiLock, FiMail } from 'react-icons/fi';
+import { FiLock, FiMail } from "react-icons/fi";
 import { Input } from "../../components/Atoms/Input";
+import { FaFacebook } from "react-icons/fa";
+import { Checkbox } from "../../components/Atoms/Checkbox";
+import { Button } from "../../components/Atoms/Button";
+import { AuthContext } from "../../hooks/AuthContext";
+import { Container } from "../../styles/preLogin";
 
 export function Login() {
   const history = useHistory();
@@ -31,7 +36,7 @@ export function Login() {
   return (
     <>
       <Header />
-      <div>
+      <Container>
         <form onSubmit={handleSignIn}>
           <div className="title">
             <h1>Login</h1>
@@ -77,12 +82,12 @@ export function Login() {
 
           <div className="register">
             Não possui conta?
-            <Link href="/register">
-              <a> Cadastre-se!</a>
+            <Link to="/register">
+              Cadastre-se!
             </Link>
           </div>
         </form>
-      </div>
+      </Container>
     </>
   );
 }
