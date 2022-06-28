@@ -1,0 +1,15 @@
+python3 -m pip install --user virtualenv
+
+python3 -m venv env (criar o env)
+
+source env/bin/activate (ativar o env)
+
+which python (checar)
+
+deactivate (sair do env)
+
+python3 -m pip install -r requirements.txt
+
+python3 -m pip freeze
+
+python3 -m pip freeze > requirements.txt
