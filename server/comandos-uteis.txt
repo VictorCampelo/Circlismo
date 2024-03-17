@@ -13,3 +13,5 @@ python3 -m pip install -r requirements.txt
 python3 -m pip freeze
 
 python3 -m pip freeze > requirements.txt
+
+sudo apt install libcairo2-dev pkg-config python3-dev

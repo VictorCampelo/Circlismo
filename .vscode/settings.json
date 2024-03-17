@@ -1,4 +1,9 @@
 {
   "python.formatting.provider": "yapf",
-  "python.pythonPath": "g:\\00-PROJETOS\\FRONTEND\\circlismo\\server\\venv\\Scripts\\python.exe"
+  "python.pythonPath": "g:\\00-PROJETOS\\FRONTEND\\circlismo\\server\\venv\\Scripts\\python.exe",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#342D10",
+    "titleBar.activeBackground": "#493F16",
+    "titleBar.activeForeground": "#FCFBF5"
+  }
 }

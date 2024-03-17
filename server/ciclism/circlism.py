@@ -1,134 +1,145 @@
 import os
 import cv2
-import cairo
-import time
 import numpy as np
 
+class Circlism:
+    def __init__(self, filename, path_to_open, path_to_open_back, path_to_save):
+        # Check if the output directory exists, if not, create it
+        os.makedirs(path_to_save, exist_ok=True)
 
-class Circlism():
-    def __init__(self, filename, pathToOpen, pathToOpenBack, pathToSave):
-        fileDir = os.path.dirname(os.path.realpath('file'))
-        fileIN = fileDir + f"{pathToOpen}/{filename}"
-        fileBACK = fileDir + f"{pathToOpenBack}/{filename}"
-        fileOUT = fileDir + f"{pathToSave}/{filename}"
+        # Paths for input, background, and output files
+        self.file_in = os.path.join(path_to_open, filename)
+        self.file_back = os.path.join(path_to_open_back, filename)
+        self.path_to_save = os.path.join(path_to_save, filename)
 
-        self.pathToSave = fileOUT
-        self.image = self.load_image(fileIN)
-        self.back = self.load_image(fileBACK)
-        self.back1 = fileBACK
-        self.SIZE_X = self.image.shape[1]
-        self.SIZE_Y = self.image.shape[0]
-        self.SIZE = min(self.SIZE_X, self.SIZE_Y)
-        self.TWOPI = 2.0 * 3.14
+        # Load input and background images
+        self.image = self.load_image(self.file_in)
+        self.back1 = self.file_back
+
+        # Initialize image size and other parameters
+        self.size_x, self.size_y, self.size, self.two_pi = self.initialize_params()
 
     def load_image(self, path):
-        Image1 = cv2.imread(path)
-        Image1 = cv2.cvtColor(Image1, cv2.COLOR_BGR2RGB)
-        return Image1
+        # Load image from the given path
+        img = cv2.imread(path)
+
+        # Check if the image is successfully loaded
+        if img is None:
+            print(f"Error: Unable to read image file '{path}'")
+            return None
+
+        # Convert BGR image to RGB
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return img
+
+    def initialize_params(self):
+        # Check if the image is loaded successfully
+        if self.image is None:
+            return 0, 0, 0, 0
+
+        # Calculate image size and other parameters
+        size_x = self.image.shape[1]
+        size_y = self.image.shape[0]
+        size = min(size_x, size_y)
+        two_pi = 2.0 * 3.14
+        return size_x, size_y, size, two_pi
 
     def process_image(self):
+        # Check if the image is loaded successfully
+        if self.image is None:
+            print("Error: Unable to load the image.")
+            return None
+
+        # Apply Canny edge detection
         canny = cv2.Canny(self.image, 200, 300)
 
-        edges_inv = (255 - canny)
+        # Invert the edges
+        edges_inv = 255 - canny
 
+        # Calculate distance transform
         dist_transform = cv2.distanceTransform(edges_inv, cv2.DIST_L2, 0)
 
         return dist_transform
 
-    def add_new_circles(self, is_fill, dist_map, circles, r, t, e):
-        for x in range(2 * r, self.SIZE_X - r):
-            for y in range(2 * r, self.SIZE_Y - r):
-                a = True
-                if dist_map[y, x] > r:
-                    p = (int)((dist_map[y, x] + 1) / 2)
-                    if p > e:
-                        p = r
-                    if (is_fill[x, y]
-                            == 0) & (x - p >= 0) & (x + p < self.SIZE_X) & (
-                                y - p >= 0) & (y + p < self.SIZE_Y):
-                        for rt in range(x - p, x + p + 1):
-                            if rt > self.SIZE_X:
-                                break
-                            yu = rt - x
-                            for ty in range(y - p, y + p + 1):
-                                if ty > self.SIZE_Y:
-                                    break
-                                op = ty - y
-                                if yu * yu + op * op < (p + 1) * (p + 1):
-                                    if is_fill[rt, ty] == 1:
-                                        a = False
-                                        break
-                                if a == False:
-                                    break
+    def add_new_circles(self, is_filled, dist_map, circles, radius, threshold, edge_threshold):
+        for x in range(2 * radius, self.size_x - radius):
+            for y in range(2 * radius, self.size_y - radius):
+                if dist_map[y, x] > radius:
+                    circle_radius = min(int((dist_map[y, x] + 1) / 2), radius, edge_threshold)
+                    if self.is_valid_circle(x, y, circle_radius, is_filled):
+                        circles.append({'x': x, 'y': y, 'radius': circle_radius})
+                        self.fill_circle(x, y, circle_radius, is_filled)
+                        y += circle_radius * 2 + radius
 
-                        if a == True:
-                            circles.append({
-                                'x': x,
-                                'y': y,
-                                'r': p,
-                            })
-                            for st in range(x - p, x + p + 1):
-                                ui = st - x
-                                if st > self.SIZE_X:
-                                    break
-                                for en in range(y - p, y + p + 1):
-                                    iu = en - y
-                                    if en > self.SIZE_Y:
-                                        break
-                                    if ui * ui + iu * iu <= (p + 1) * (p + 1):
-                                        is_fill[st, en] = 1
+    def is_valid_circle(self, x, y, radius, is_filled):
+        for i in range(x - radius, x + radius + 1):
+            if not (0 <= i < self.size_x):
+                break
+            dx = i - x
+            for j in range(y - radius, y + radius + 1):
+                if not (0 <= j < self.size_y):
+                    break
+                dy = j - y
+                if dx ** 2 + dy ** 2 < (radius + 1) ** 2 and is_filled[i, j] == 1:
+                    return False
+        return True
 
-                            y = y + p * 2 + r
+    def fill_circle(self, x, y, radius, is_filled):
+        for i in range(x - radius, x + radius + 1):
+            if not (0 <= i < self.size_x):
+                break
+            dx = i - x
+            for j in range(y - radius, y + radius + 1):
+                if not (0 <= j < self.size_y):
+                    break
+                dy = j - y
+                if dx ** 2 + dy ** 2 <= (radius + 1) ** 2:
+                    is_filled[i, j] = 1
 
-    def show(self, img_clr, back, ctx, circles):
+    def save_svg(self, circles):
+        svg_header = f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.size_x}" height="{self.size_y}">\n'
+        svg_footer = '</svg>'
+        svg_circles = ''
+
         for c in circles:
-            if (not np.array_equal(back[int(c['y']), int(c['x'])],
-                                   np.array([200, 200, 200]))):
-                rgb = img_clr[int(c['y']), int(c['x'])]
-                rgba = [rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, 1.0]
-                ctx.set_source_rgba(*rgba)
-                ctx.arc(c['x'], c['y'], c['r'], 0, self.TWOPI)
-                ctx.fill()
-                ctx.set_source_rgba(*[0, 0, 0, 1])
-                ctx.arc(c['x'], c['y'], c['r'], 0, self.TWOPI)
-                ctx.stroke()
-            else:
-                rgb = img_clr[int(c['y']), int(c['x'])]
-                rgba = [rgb[0] / 255, rgb[1] / 255, rgb[2] / 255, 0.7]
-                ctx.set_source_rgba(*rgba)
-                ctx.arc(c['x'], c['y'], c['r'], 0, self.TWOPI)
-                ctx.fill()
-                ctx.set_source_rgba(*[0, 0, 0, 1])
+            x = c['x']
+            y = c['y']
+            radius = c['radius']
+            color = self.image[y, x]  # Get color from original image
+            svg_color = f'rgb({color[0]}, {color[1]}, {color[2]})'
+            svg_circles += f'<circle cx="{x}" cy="{y}" r="{radius}" fill="{svg_color}" />\n'
+
+        svg_content = svg_header + svg_circles + svg_footer
+
+        # Change file extension to SVG
+        svg_filename = os.path.splitext(self.path_to_save)[0] + '.svg'
+
+        with open(svg_filename, 'w') as f:
+            f.write(svg_content)
 
     def run_circlism(self):
+        # Process the input image
         processed_image = self.process_image()
-        back = cv2.imread(self.back1)
-        s = time.time()
-        image2 = cairo.ImageSurface.create_from_png(self.back1)
-        buffer_surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.SIZE_X,
-                                         self.SIZE_Y)
-        buffer = cairo.Context(buffer_surf)
-        # buffer.set_source_surface(self.image, 0,0)
-        # buffer.set_source_rgba(0,0,0,1)
-        buffer.paint()
 
-        # buffer.scale(self.SIZE_X, self.SIZE_Y)
+        # Check if the image is loaded successfully
+        if processed_image is None:
+            return
 
-        buffer.rectangle(0.0, 0.0, 1.0, 1.0)
-        buffer.fill()
+        # Detect circles and draw them
         circles = []
-        is_fill = np.zeros([self.SIZE_X + 1, self.SIZE_Y + 1])
-        # D = [300, 200]
-        # D = [300, 200, 100]
-        D = [150, 120, 90, 60, 30, 20, 10]
-        # D = [ 40,30 ]
-        # add_new_circles(is_fill, processed_image, circles,40,40,100)
-        for i in range(len(D)):
-            if i == 0:
-                continue
-            self.add_new_circles(is_fill, processed_image, circles, D[i], D[i],
-                                 D[i - 1])
+        is_fill = np.zeros([self.size_x + 1, self.size_y + 1])
 
-        buffer.set_line_width(1)
-        self.show(self.image, back, buffer, circles)
-        buffer_surf.write_to_png(self.pathToSave)
+        # Define the base circle radii for an image of size 1024x1024
+        base_circle_radii = [150, 120, 90, 60, 30, 20, 10, 5, 3]
+
+        # Calculate the maximum distance value in the distance transform
+        width = processed_image.shape[1]
+
+        # Scale the base circle radii based on the maximum distance
+        circle_radii = [int(radius * width / 1024) for radius in base_circle_radii]
+
+        for i in range(1, len(circle_radii)):
+            self.add_new_circles(is_fill, processed_image, circles, circle_radii[i], circle_radii[i], circle_radii[i - 1])
+
+        # Save circles as SVG
+        self.save_svg(circles)

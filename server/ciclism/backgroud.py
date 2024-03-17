@@ -2,63 +2,57 @@ import cv2
 import numpy as np
 import os
 
+class Backgroud:
+    def __init__(self, filename, pathToOpen, pathToSave):
+        # Construct full paths for input and output files
+        input_file = os.path.join(pathToOpen, filename)
+        output_file = os.path.join(pathToSave, filename)
 
-class Backgroud():
-    def __init__(
-        self,
-        filename,
-        pathToOpen,
-        pathToSave,
-    ):
-        fileDir = os.path.dirname(os.path.realpath('__file__'))
-        fileIN = fileDir + f"{pathToOpen}/{filename}"
-        fileOUT = fileDir + f"{pathToSave}/{filename}"
+        # Check if the output directory exists, if not, create it
+        os.makedirs(pathToSave, exist_ok=True)
 
-        img = cv2.imread(fileIN)
+        # Check if the input file exists
+        if not os.path.exists(input_file):
+            print(f"Error: Input file '{input_file}' not found.")
+            return
 
-        blurred = cv2.GaussianBlur(img, (5, 5), 0)  # Remove noise
+        # Load the input image
+        img = cv2.imread(input_file)
 
-        edgeImg = np.max([
-            self.edgedetect(blurred[:, :, 0]),
-            self.edgedetect(blurred[:, :, 1]),
-            self.edgedetect(blurred[:, :, 2])
-        ],
-                         axis=0)
+        # Check if the image is successfully loaded
+        if img is None:
+            print(f"Error: Unable to read image file '{input_file}'.")
+            return
 
-        mean = np.mean(edgeImg)
-        # Zero any value that is less than mean. This reduces a lot of noise.
-        edgeImg[edgeImg <= mean] = 0
-        # '/content/drive/MyDrive/Colab/ciclism/images/intermediate/background/'
-        cv2.imwrite(fileOUT, img)
+        # Remove noise using Gaussian blur
+        blurred = cv2.GaussianBlur(img, (5, 5), 0)
 
-    def edgedetect(self, channel):
-        sobelX = cv2.Sobel(channel, cv2.CV_16S, 1, 0)
-        sobelY = cv2.Sobel(channel, cv2.CV_16S, 0, 1)
+        # Detect edges in the image
+        edgeImg = self.edgedetect(blurred)
+
+        # Find significant contours
+        significant_contours = self.find_significant_contours(edgeImg)
+
+        # Draw significant contours on the input image
+        cv2.drawContours(img, significant_contours, -1, (0, 255, 0), 2)
+
+        # Write the processed image to the output file
+        cv2.imwrite(output_file, img)
+
+    def edgedetect(self, img):
+        # Convert the image to grayscale
+        gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        # Apply Sobel edge detection
+        sobelX = cv2.Sobel(gray_img, cv2.CV_16S, 1, 0)
+        sobelY = cv2.Sobel(gray_img, cv2.CV_16S, 0, 1)
         sobel = np.hypot(sobelX, sobelY)
 
-        sobel[sobel > 255] = 255
-        return sobel
+        # Normalize the edge image
+        sobel /= sobel.max() / 255
+        return sobel.astype(np.uint8)
 
-    def findSignificantContours(img, edgeImg):
-        contours, heirarchy = cv2.findContours(edgeImg, cv2.RETR_TREE,
-                                               cv2.CHAIN_APPROX_SIMPLE)
-
-        # Find level 1 contours
-        level1 = []
-        for i, tupl in enumerate(heirarchy[0]):
-            # Each array is in format (Next, Prev, First child, Parent)
-            # Filter the ones without parent
-            if tupl[3] == -1:
-                tupl = np.insert(tupl, 0, [i])
-                level1.append(tupl)
-        significant = []
-        tooSmall = edgeImg.size * 5 / 100  # If contour isn't covering 5% of total area of image then it probably is too small
-        for tupl in level1:
-            contour = contours[tupl[0]]
-            area = cv2.contourArea(contour)
-            if area > tooSmall:
-                significant.append([contour, area])
-
-        significant.sort(key=lambda x: x[1])
-        #print ([x[1] for x in significant]);
-        return [x[0] for x in significant]
+    def find_significant_contours(self, edgeImg):
+        contours, _ = cv2.findContours(edgeImg, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        significant = [cnt for cnt in contours if cv2.contourArea(cnt) > 0.05 * edgeImg.size]
+        return significant

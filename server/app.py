@@ -27,41 +27,66 @@ def not_found(e):
 
 
 @app.route('/upload/ciclism', methods=['POST'])
-def ciclism():
-    inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'input')
-    outputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'output')
-    if not os.path.isdir(inputFolder):
-        os.mkdir(inputFolder)
-    logger.info("welcome to upload`")
+def circlism():
+    input_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'input')
+    output_folder = os.path.join(app.config['UPLOAD_FOLDER'], 'output')
+    
+    # Ensure that input and output folders exist
+    os.makedirs(input_folder, exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
+
+    logger.info("Welcome to upload")
     file = request.files['file']
-    id = request.form['id']
-    print(id)
+    identifier = request.form['id']
+    logger.info(f"Processing file with ID: {identifier}")
+
     filename = secure_filename(file.filename)
-    if filename != '':
-        file_ext = os.path.splitext(filename)[1]
-        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
-            abort(400)
-    destination = "/".join([inputFolder, id+'.png'])
+    
+    # Check if the filename is not empty
+    if filename == '':
+        abort(400)
+
+    # Check the file extension
+    file_ext = os.path.splitext(filename)[1]
+    if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+        abort(400)
+        
+    filename = identifier + '.png'
+    
+    # Save the file to the input folder
+    destination = os.path.join(input_folder, filename)
     file.save(destination)
     session['uploadFilePath'] = destination
-    Circle(id+'.png').run()
 
-    full_filename = "http://localhost:5000/uploads/output/result.png"
+    # Run Circle algorithm on the uploaded image
+    Circle(filename).run()
+
+    # URL for the output image
+    full_filename = f"http://localhost:5000/uploads/output/{identifier}.svg"
+    
+    # Delay the response to ensure the processing is completed
     time.sleep(10)
+    
+    # Return the URL of the processed image
     return jsonify({"image": full_filename})
 
 @app.route('/upload/number', methods=['POST'])
 def number():
-    Numerator()
-    pathFile = "http://localhost:5000/uploads/output/result-canvas-notnumber.png"
+    identifier = request.form['id']
+    filename = identifier
+    Numerator(filename).run()
+    pathFile = f"http://localhost:5000/uploads/output/number/{identifier}.png"
     return jsonify({"image": pathFile})
-
 
 @app.route('/uploads/output/<filename>')
 def send_file(filename):
     inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'output')
     return send_from_directory(inputFolder, filename)
 
+@app.route('/uploads/output/number/<filename>')
+def send_file_number(filename):
+    inputFolder = os.path.join(app.config['UPLOAD_FOLDER'], 'output', 'number')
+    return send_from_directory(inputFolder, filename)
 
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
