@@ -130,7 +130,7 @@ class Circlism:
         is_fill = np.zeros([self.size_x + 1, self.size_y + 1])
 
         # Define the base circle radii for an image of size 1024x1024
-        base_circle_radii = [150, 120, 90, 60, 30, 20, 10, 5, 3]
+        base_circle_radii = [150, 120, 90, 60, 30, 20, 10]
 
         # Calculate the maximum distance value in the distance transform
         width = processed_image.shape[1]

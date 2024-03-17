@@ -8,7 +8,7 @@ from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 
 class Canvas:
-    def __init__(self, path_pic, filename_canvas, nb_color, plot=False, save=True, pixel_size=2048):
+    def __init__(self, path_pic, filename_canvas, nb_color, plot=False, save=True, pixel_size=1024):
         # Check if the image file exists
         if not os.path.exists(path_pic):
             print(f"Error: File '{path_pic}' not found.")
@@ -49,21 +49,20 @@ class Canvas:
         for ind, color in enumerate(colors):
             self.colormap.append([int(c * 255) for c in color])
             mask = cv2.inRange(quantified_image, color, color)
-            cnts = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            cnts = cv2.findContours(mask, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
             cnts = cnts[0] if len(cnts) == 2 else cnts[1]
 
             for contour in cnts:
-                # Draw contour with correct color
-                cv2.drawContours(canvas, [contour], -1, self.colormap[ind], 1)
-                
-                # Calculate centroid
-                M = cv2.moments(contour)
-                if M["m00"] != 0:
-                    cX = int(M["m10"] / M["m00"])
-                    cY = int(M["m01"] / M["m00"])
-                    
-                    # Draw text with correct color
-                    cv2.putText(canvas, str(ind + 1), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 0.24, self.colormap[ind], 1)
+                _, _, width_ctr, height_ctr = cv2.boundingRect(contour)
+                if width_ctr > 1 and height_ctr > 1 and cv2.contourArea(
+                        contour, True) < -5:
+                    cv2.drawContours(canvas, [contour], -1, 0, 1)
+                    #Add label
+                    M = cv2.moments(contour)
+                    if M["m00"] != 0:
+                        cX = int(M["m10"] / M["m00"])
+                        cY = int(M["m01"] / M["m00"])
+                        cv2.putText(canvas, '{:d}'.format(ind + 1), (cX, cY), cv2.FONT_HERSHEY_SIMPLEX, 0.2, 0.25, 1)
 
 
         if self.save:
@@ -71,6 +70,16 @@ class Canvas:
                         cv2.cvtColor(quantified_image.astype('float32') * 255, cv2.COLOR_BGR2RGB))
             cv2.imwrite(os.path.join(self.outputDir, self.filename_canvas), canvas)
         return canvas
+    
+    def resize_image(self, image, max_dimension):
+        height, width = image.shape[:2]
+        if height <= max_dimension and width <= max_dimension:
+            return image
+
+        ratio = max_dimension / max(height, width)
+        dimensions = (int(width * ratio), int(height * ratio))
+        resized_image = cv2.resize(image, dimensions, interpolation=cv2.INTER_AREA)
+        return resized_image
 
     def resize(self):
         """Resize the image to match the target width and respect the picture ratio"""
