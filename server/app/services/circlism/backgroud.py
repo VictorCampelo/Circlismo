@@ -24,17 +24,17 @@ class Backgroud:
             print(f"Error: Unable to read image file '{input_file}'.")
             return
 
-        # Remove noise using Gaussian blur
-        blurred = cv2.GaussianBlur(img, (5, 5), 0)
+        # # Remove noise using Gaussian blur
+        # blurred = cv2.GaussianBlur(img, (5, 5), 0)
 
-        # Detect edges in the image
-        edgeImg = self.edgedetect(blurred)
+        # # Detect edges in the image
+        # edgeImg = self.edgedetect(blurred)
 
-        # Find significant contours
-        significant_contours = self.find_significant_contours(edgeImg)
+        # # Find significant contours
+        # significant_contours = self.find_significant_contours(edgeImg)
 
-        # Draw significant contours on the input image
-        cv2.drawContours(img, significant_contours, -1, (0, 255, 0), 2)
+        # # Draw significant contours on the input image
+        # cv2.drawContours(img, significant_contours, -1, (0, 255, 0), 2)
 
         # Write the processed image to the output file
         cv2.imwrite(output_file, img)

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from ciclism.meanshift import Meanshift
-from number.run import Number
-from ciclism.circlism import Circlism
-from ciclism.backgroud import Backgroud
+
 import os
+
+from app.services.circlism.meanshift import Meanshift
+from app.services.circlism.backgroud import Backgroud
+from app.services.circlism.circlism import Circlism
 
 class Circle():
     def __init__(self, filename):

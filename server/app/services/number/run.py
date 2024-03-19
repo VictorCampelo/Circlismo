@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from number.canvas import Canvas
+from app.services.number.canvas import Canvas
 from cairosvg import svg2png
 
 class Number():

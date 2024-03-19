@@ -25,10 +25,10 @@ class Meanshift:
             print(f"Error: Unable to read image file '{self.input_file}'")
             return
 
-        image = cv2.medianBlur(image, 3)
-        resized_image = self.resize_image(image, max_dimension=512)
+        image = self.preprocess_image(image)
 
-        segmented_image = self.apply_mean_shift_segmentation(resized_image)
+        segmented_image = self.apply_mean_shift_segmentation(image)
+        
         cv2.imwrite(self.output_file, segmented_image)
 
     def resize_image(self, image, max_dimension):
@@ -40,11 +40,24 @@ class Meanshift:
         dimensions = (int(width * ratio), int(height * ratio))
         resized_image = cv2.resize(image, dimensions, interpolation=cv2.INTER_AREA)
         return resized_image
+    
+    def preprocess_image(self, image):
+        # Resize image if it exceeds maximum dimension
+        image = self.resize_image(image, max_dimension=512)
+        
+        # # Apply histogram equalization to each channel
+        # equalized_channels = [cv2.equalizeHist(channel) for channel in cv2.split(image)]
+        # equalized_image = cv2.merge(equalized_channels)
+
+        # Apply median blur to reduce noise
+        blurred_image = cv2.GaussianBlur(src=image, ksize=(3, 3), sigmaX=2)
+
+        return blurred_image
 
     def apply_mean_shift_segmentation(self, image):
         flat_image = image.reshape((-1, 3)).astype(np.float32)
 
-        bandwidth = estimate_bandwidth(flat_image, quantile=0.04, n_samples=1000)
+        bandwidth = estimate_bandwidth(flat_image, quantile=0.04, n_samples=1000, n_jobs=-1)
         ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
         ms.fit(flat_image)
         labeled = ms.labels_

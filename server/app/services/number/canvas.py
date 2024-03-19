@@ -8,7 +8,7 @@ from sklearn.cluster import KMeans
 from sklearn.utils import shuffle
 
 class Canvas:
-    def __init__(self, path_pic, filename_canvas, nb_color, plot=False, save=True, pixel_size=1024):
+    def __init__(self, path_pic, filename_canvas, nb_color, plot=False, save=True, pixel_size=2048):
         # Check if the image file exists
         if not os.path.exists(path_pic):
             print(f"Error: File '{path_pic}' not found.")
