@@ -38,9 +38,13 @@ ApiDoc(
 # Enable auto-generating args.md
 app.config["API_DOC_AUTO_GENERATING_ARGS_MD"] = True
 
-@app.errorhandler(404)
-def not_found(e):
-    return render_template("index.html")
+#@app.errorhandler(404)
+#def not_found(e):
+#    return render_template("index.html")
+
+@app.route('/ping')
+def ping():
+    return 'pong'
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, use_reloader=True)
+    app.run(host='0.0.0.0', debug=True, port=5000, use_reloader=True)
